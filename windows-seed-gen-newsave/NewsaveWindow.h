@@ -317,6 +317,7 @@ namespace CppCLRWinFormsProject
     private:
     private:
         System::Windows::Forms::Label^ label24;
+private: System::Windows::Forms::Button^ button1;
 
 
     private:
@@ -382,6 +383,7 @@ namespace CppCLRWinFormsProject
             this->shoguul = (gcnew System::Windows::Forms::ComboBox());
             this->shoguul_item1 = (gcnew System::Windows::Forms::ComboBox());
             this->label24 = (gcnew System::Windows::Forms::Label());
+            this->button1 = (gcnew System::Windows::Forms::Button());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->output_seeds))->BeginInit();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->BeginInit();
             this->SuspendLayout();
@@ -397,7 +399,7 @@ namespace CppCLRWinFormsProject
             // 
             // find_seeds_btn
             // 
-            this->find_seeds_btn->Location = System::Drawing::Point(325, 450);
+            this->find_seeds_btn->Location = System::Drawing::Point(415, 449);
             this->find_seeds_btn->Name = L"find_seeds_btn";
             this->find_seeds_btn->Size = System::Drawing::Size(194, 45);
             this->find_seeds_btn->TabIndex = 1;
@@ -425,14 +427,14 @@ namespace CppCLRWinFormsProject
             // 
             // output_seeds
             // 
-            this->output_seeds->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){5, 0, 0, 0});
+            this->output_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
             this->output_seeds->Location = System::Drawing::Point(78, 441);
-            this->output_seeds->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){1000, 0, 0, 0});
-            this->output_seeds->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->output_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 500, 0, 0, 0 });
+            this->output_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->output_seeds->Name = L"output_seeds";
             this->output_seeds->Size = System::Drawing::Size(120, 22);
             this->output_seeds->TabIndex = 4;
-            this->output_seeds->Value = System::Decimal(gcnew cli::array<System::Int32>(4){50, 0, 0, 0});
+            this->output_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
             // 
             // mine4
             // 
@@ -789,34 +791,32 @@ namespace CppCLRWinFormsProject
             // 
             // search_seeds
             // 
-            this->search_seeds->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){100, 0, 0, 0});
+            this->search_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, 0 });
             this->search_seeds->Location = System::Drawing::Point(78, 485);
-            this->search_seeds->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){100000000, 0, 0, 0});
-            this->search_seeds->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->search_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
+            this->search_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->search_seeds->Name = L"search_seeds";
             this->search_seeds->Size = System::Drawing::Size(120, 22);
             this->search_seeds->TabIndex = 36;
-            this->search_seeds->Value = System::Decimal(gcnew cli::array<System::Int32>(4){10000000, 0, 0, 0});
+            this->search_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
             // 
             // outputbox
             // 
             this->outputbox->BackColor = System::Drawing::SystemColors::WindowText;
             this->outputbox->ForeColor = System::Drawing::SystemColors::ControlLight;
-            this->outputbox->Location = System::Drawing::Point(589, 419);
+            this->outputbox->Location = System::Drawing::Point(802, 24);
             this->outputbox->Name = L"outputbox";
             this->outputbox->ReadOnly = true;
-            this->outputbox->Size = System::Drawing::Size(239, 96);
+            this->outputbox->Size = System::Drawing::Size(168, 320);
             this->outputbox->TabIndex = 37;
             this->outputbox->Text = L"";
             // 
             // label23
             // 
             this->label23->AutoSize = true;
-            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F,
-                                                               System::Drawing::FontStyle::Regular,
-                                                               System::Drawing::GraphicsUnit::Point,
-                                                               static_cast<System::Byte>(0)));
-            this->label23->Location = System::Drawing::Point(847, 177);
+            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+                static_cast<System::Byte>(0)));
+            this->label23->Location = System::Drawing::Point(842, 361);
             this->label23->Name = L"label23";
             this->label23->Size = System::Drawing::Size(102, 29);
             this->label23->TabIndex = 38;
@@ -824,10 +824,9 @@ namespace CppCLRWinFormsProject
             // 
             // shoguul
             // 
-
             this->shoguul->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->shoguul->FormattingEnabled = true;
-            this->shoguul->Location = System::Drawing::Point(837, 209);
+            this->shoguul->Location = System::Drawing::Point(832, 393);
             this->shoguul->Name = L"shoguul";
             this->shoguul->Size = System::Drawing::Size(121, 24);
             this->shoguul->TabIndex = 39;
@@ -836,7 +835,7 @@ namespace CppCLRWinFormsProject
             // 
             this->shoguul_item1->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
             this->shoguul_item1->FormattingEnabled = true;
-            this->shoguul_item1->Location = System::Drawing::Point(837, 294);
+            this->shoguul_item1->Location = System::Drawing::Point(833, 460);
             this->shoguul_item1->Name = L"shoguul_item1";
             this->shoguul_item1->Size = System::Drawing::Size(121, 24);
             this->shoguul_item1->TabIndex = 40;
@@ -844,11 +843,21 @@ namespace CppCLRWinFormsProject
             // label24
             // 
             this->label24->AutoSize = true;
-            this->label24->Location = System::Drawing::Point(879, 275);
+            this->label24->Location = System::Drawing::Point(875, 441);
             this->label24->Name = L"label24";
             this->label24->Size = System::Drawing::Size(35, 16);
             this->label24->TabIndex = 42;
             this->label24->Text = L"Item:";
+            // 
+            // button1
+            // 
+            this->button1->Location = System::Drawing::Point(895, 501);
+            this->button1->Name = L"button1";
+            this->button1->Size = System::Drawing::Size(75, 23);
+            this->button1->TabIndex = 43;
+            this->button1->Text = L"Reset";
+            this->button1->UseVisualStyleBackColor = true;
+            this->button1->Click += gcnew System::EventHandler(this, &NewsaveWindow::button1_Click);
             // 
             // NewsaveWindow
             // 
@@ -857,6 +866,7 @@ namespace CppCLRWinFormsProject
             this->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
             this->BackColor = System::Drawing::SystemColors::Menu;
             this->ClientSize = System::Drawing::Size(982, 533);
+            this->Controls->Add(this->button1);
             this->Controls->Add(this->label24);
             this->Controls->Add(this->shoguul_item1);
             this->Controls->Add(this->shoguul);
@@ -914,6 +924,7 @@ namespace CppCLRWinFormsProject
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->EndInit();
             this->ResumeLayout(false);
             this->PerformLayout();
+
         }
 #pragma endregion
     private:
@@ -928,8 +939,8 @@ namespace CppCLRWinFormsProject
 
         System::Void find_seeds_btn_Click(System::Object^ sender, System::EventArgs^ e)
         {
-            std::map<uint_fast8_t, std::string> room_names;
-            std::map<uint_fast8_t, uint_fast8_t> rooms;
+            std::map<int_fast16_t, std::string> room_names;
+            std::map<int_fast16_t, int_fast16_t> rooms;
             std::string shoguul_floor_name = "";
 
             for each (Control^ control in this->Controls)
@@ -981,5 +992,15 @@ namespace CppCLRWinFormsProject
         {
             init_dropdowns();
         }
-    };
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        for each (Control ^ control in this->Controls)
+        {
+            if (control->GetType() == ComboBox::typeid)
+            {
+                auto box = static_cast<ComboBox^>(control);
+                box->SelectedIndex = 0;
+            }
+        }
+    }
+};
 }

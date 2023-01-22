@@ -7,8 +7,8 @@ class Floors
 {
 
 public:
-     Floors(const uint_fast8_t first_item, const std::map<uint_fast8_t, uint_fast8_t> rooms,
-                    const std::map<uint_fast8_t, std::string> room_names,
+     Floors(const uint_fast8_t first_item, const std::map<int_fast16_t, int_fast16_t> rooms,
+                    const std::map<int_fast16_t, std::string> room_names,
                     const Shoguul& shoguul) : first_item(
         first_item), shoguul(shoguul), room_names(room_names), rooms(rooms)
     {
@@ -24,7 +24,7 @@ public:
     const uint_fast8_t first_item;
     Shoguul shoguul;
 
-    std::map<uint_fast8_t, std::string> room_names;
-    std::map<uint_fast8_t, uint_fast8_t> rooms;
+    std::map<int_fast16_t, std::string> room_names;
+    std::map<int_fast16_t, int_fast16_t> rooms;
     bool skip_floors;
 };
