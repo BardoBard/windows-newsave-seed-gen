@@ -22,11 +22,18 @@ private:
         "Soul Cannon", "Greaves", "Pauldron", "Obsidian Knife", "Fork", "Ursa Major", "Canis Major", "Sagitta",
         "Circinus", "Orion's Sword", "Shrapnel", "Tortoise Shield", "Golden Axe"
     };
+
+
+    inline const static std::string legendary_display[19] = {
+        "Lockpick", "Chakram", "Karmic Scale", "Rabbit Gloves", "Doom Blade", "Mjölnir", "Pocket of Holding",
+        "Miniaturizer", "Nullstone", "Mushroom", "Glass Cannon", "Branding Bomb", "Suneater", "Transmutagen Blast",
+        "Tsar Bomba", "Shield of Quills", "Soul Guard", "Box of Holding", "Stoneforge Broth"
+    };
     inline const static uint_fast8_t Newsave::starter_to_newsave_index[9] = {5, 31, 0, 22, 7, 44, 25, 6, 50};
 
     void find_floors(uint_fast8_t (&newsave_weight)[59], uint_fast16_t newsave_weightz,
                      const uint_fast32_t seed);
-    void static start_seed(const Floors& room, uint_fast32_t seed, uint_fast32_t max);
+    void static start_seed(const Floors& floors, uint_fast32_t seed, uint_fast32_t max);
 
 public:
     void static calculate_seeds(const Floors& floors, const int_fast32_t seed_output_amount,

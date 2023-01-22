@@ -37,7 +37,7 @@ namespace CppCLRWinFormsProject
                 {
                     auto box = static_cast<ComboBox^>(control);
 
-                    if (box == mine1) continue;
+                    if (box == mine1 || box == shoguul || box == shoguul_item1) continue;
 
                     auto bs = gcnew BindingSource();
                     bs->DataSource = items;
@@ -70,6 +70,68 @@ namespace CppCLRWinFormsProject
             mine1->DisplayMember = "Value";
 
             mine1->DataSource = bs;
+
+            items = gcnew Generic::Dictionary<int, String^>();
+
+            items->Add(NOTHING, "Nothing");
+            items->Add(2, "mine2");
+            items->Add(3, "mine3");
+            items->Add(4, "mine4");
+            items->Add(6, "dungeon1");
+            items->Add(7, "dungeon2");
+            items->Add(8, "dungeon3");
+            items->Add(9, "dungeon4");
+            items->Add(11, "halls1");
+            items->Add(12, "halls2");
+            items->Add(13, "halls3");
+            items->Add(14, "halls4");
+            items->Add(16, "caverns1");
+            items->Add(17, "caverns2");
+            items->Add(18, "caverns3");
+            items->Add(19, "caverns4");
+            items->Add(21, "core1");
+            items->Add(22, "core2");
+            items->Add(23, "core3");
+            items->Add(24, "core4");
+
+            bs = gcnew BindingSource();
+            bs->DataSource = items;
+
+            shoguul->ValueMember = "Key";
+            shoguul->DisplayMember = "Value";
+
+            shoguul->DataSource = bs;
+
+            items = gcnew Generic::Dictionary<int, String^>();
+
+            items->Add(0, "Lockpick");
+            items->Add(1, "Chakram");
+            items->Add(2, "Karmic Scale");
+            items->Add(3, "Rabbit Gloves");
+            items->Add(4, "Doom Blade");
+            items->Add(5, "Mjolnir");
+            items->Add(6, "Pocket of Holding");
+            items->Add(7, "Miniaturizer");
+            items->Add(8, "Nullstone");
+            items->Add(9, "Mushroom");
+            items->Add(10, "Glass Cannon");
+            items->Add(11, "Branding Bomb");
+            items->Add(12, "Suneater");
+            items->Add(13, "Transmutagen Blast");
+            items->Add(14, "Tsar Bomba");
+            items->Add(15, "Shield of Quills");
+            items->Add(16, "Soul Guard");
+            items->Add(17, "Box of Holding");
+            items->Add(18, "Stoneforge Broth");
+
+            bs = gcnew BindingSource();
+            bs->DataSource = items;
+
+            shoguul_item1->ValueMember = "Key";
+            shoguul_item1->DisplayMember = "Value";
+
+            shoguul_item1->DataSource = bs;
+
 
             items = gcnew Generic::Dictionary<int, String^>();
 
@@ -133,7 +195,6 @@ namespace CppCLRWinFormsProject
             items->Add(56, "Shrapnel");
             items->Add(57, "Tortoise Shield");
             items->Add(58, "Golden Axe");
-
 
             add_data_to_dropdowns(items);
         }
@@ -247,6 +308,15 @@ namespace CppCLRWinFormsProject
     private:
     private:
         System::Windows::Forms::RichTextBox^ outputbox;
+    private:
+        System::Windows::Forms::Label^ label23;
+    private:
+        System::Windows::Forms::ComboBox^ shoguul;
+    private:
+        System::Windows::Forms::ComboBox^ shoguul_item1;
+    private:
+    private:
+        System::Windows::Forms::Label^ label24;
 
 
     private:
@@ -308,6 +378,10 @@ namespace CppCLRWinFormsProject
             this->label22 = (gcnew System::Windows::Forms::Label());
             this->search_seeds = (gcnew System::Windows::Forms::NumericUpDown());
             this->outputbox = (gcnew System::Windows::Forms::RichTextBox());
+            this->label23 = (gcnew System::Windows::Forms::Label());
+            this->shoguul = (gcnew System::Windows::Forms::ComboBox());
+            this->shoguul_item1 = (gcnew System::Windows::Forms::ComboBox());
+            this->label24 = (gcnew System::Windows::Forms::Label());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->output_seeds))->BeginInit();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->BeginInit();
             this->SuspendLayout();
@@ -726,19 +800,67 @@ namespace CppCLRWinFormsProject
             // 
             // outputbox
             // 
-            this->outputbox->Location = System::Drawing::Point(581, 419);
+            this->outputbox->BackColor = System::Drawing::SystemColors::WindowText;
+            this->outputbox->ForeColor = System::Drawing::SystemColors::ControlLight;
+            this->outputbox->Location = System::Drawing::Point(589, 419);
             this->outputbox->Name = L"outputbox";
             this->outputbox->ReadOnly = true;
             this->outputbox->Size = System::Drawing::Size(239, 96);
             this->outputbox->TabIndex = 37;
             this->outputbox->Text = L"";
             // 
+            // label23
+            // 
+            this->label23->AutoSize = true;
+            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F,
+                                                               System::Drawing::FontStyle::Regular,
+                                                               System::Drawing::GraphicsUnit::Point,
+                                                               static_cast<System::Byte>(0)));
+            this->label23->Location = System::Drawing::Point(847, 177);
+            this->label23->Name = L"label23";
+            this->label23->Size = System::Drawing::Size(102, 29);
+            this->label23->TabIndex = 38;
+            this->label23->Text = L"Shoguul";
+            // 
+            // shoguul
+            // 
+
+            this->shoguul->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+            this->shoguul->FormattingEnabled = true;
+            this->shoguul->Location = System::Drawing::Point(837, 209);
+            this->shoguul->Name = L"shoguul";
+            this->shoguul->Size = System::Drawing::Size(121, 24);
+            this->shoguul->TabIndex = 39;
+            // 
+            // shoguul_item1
+            // 
+            this->shoguul_item1->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+            this->shoguul_item1->FormattingEnabled = true;
+            this->shoguul_item1->Location = System::Drawing::Point(837, 294);
+            this->shoguul_item1->Name = L"shoguul_item1";
+            this->shoguul_item1->Size = System::Drawing::Size(121, 24);
+            this->shoguul_item1->TabIndex = 40;
+            // 
+            // label24
+            // 
+            this->label24->AutoSize = true;
+            this->label24->Location = System::Drawing::Point(879, 275);
+            this->label24->Name = L"label24";
+            this->label24->Size = System::Drawing::Size(35, 16);
+            this->label24->TabIndex = 42;
+            this->label24->Text = L"Item:";
+            // 
             // NewsaveWindow
             // 
             this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
-            this->ClientSize = System::Drawing::Size(832, 533);
+            this->BackColor = System::Drawing::SystemColors::Menu;
+            this->ClientSize = System::Drawing::Size(982, 533);
+            this->Controls->Add(this->label24);
+            this->Controls->Add(this->shoguul_item1);
+            this->Controls->Add(this->shoguul);
+            this->Controls->Add(this->label23);
             this->Controls->Add(this->outputbox);
             this->Controls->Add(this->search_seeds);
             this->Controls->Add(this->label22);
@@ -808,27 +930,50 @@ namespace CppCLRWinFormsProject
         {
             std::map<uint_fast8_t, std::string> room_names;
             std::map<uint_fast8_t, uint_fast8_t> rooms;
+            std::string shoguul_floor_name = "";
 
             for each (Control^ control in this->Controls)
             {
                 if (control->GetType() == ComboBox::typeid)
                 {
-                    auto combobox = static_cast<ComboBox^>(control);
-                    const auto item_index = static_cast<int>(combobox->SelectedValue);
+                    auto box = static_cast<ComboBox^>(control);
+                    const auto item_index = static_cast<int>(box->SelectedValue);
 
-                    if (item_index == NOTHING || combobox == mine1) continue;
+                    if (box->TabIndex == static_cast<int>(shoguul->SelectedValue))
+                        shoguul_floor_name = ToStdString(box->Name);
 
-                    rooms[combobox->TabIndex] = item_index;
-                    room_names[combobox->TabIndex] = ToStdString(combobox->Name);
+
+                    if (item_index == NOTHING || box == mine1 || box == shoguul || box == shoguul_item1)
+                        continue;
+
+                    rooms[box->TabIndex] = item_index;
+                    room_names[box->TabIndex] = ToStdString(box->Name);
                 }
             }
 
-            const Floors& floors = Floors(static_cast<int>(mine1->SelectedValue), rooms, room_names);
-            // Newsave newsave = Newsave(floors,
-            //                           static_cast<int>(output_seeds->Value));
+
+            const auto floors = Floors(static_cast<int>(mine1->SelectedValue), rooms, room_names,
+                                       Shoguul(static_cast<int>(shoguul->SelectedValue),
+                                               static_cast<int>(shoguul_item1->SelectedValue), shoguul_floor_name));
 
             Newsave::calculate_seeds(floors, static_cast<int>(output_seeds->Value),
                                      static_cast<uint_fast32_t>(search_seeds->Value));
+
+            outputbox->Text = "";
+
+            std::ifstream file;
+            file.open("output.txt");
+
+            if (file.is_open())
+            {
+                std::string line;
+                while (std::getline(file, line))
+                    outputbox->AppendText(gcnew System::String((line + "\n").c_str()));
+
+                file.close();
+            }
+            else
+                outputbox->Text = "Unable to get data";
         }
 
     private:

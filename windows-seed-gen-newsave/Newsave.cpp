@@ -7,6 +7,7 @@
 #include <ostream>
 #include <string>
 #include <thread>
+#include <vector>
 #include <Windows.h>
 
 #include "NewsaveWindow.h"
@@ -19,26 +20,8 @@ std::ofstream outfile;
 std::atomic<int_fast32_t> count;
 
 
-const std::string newsave_display[59] = {
-    "Bombushka", "Seer's Blood", "Rook's Bomb", "Lightning Bomb", "Galoshes", "Bottled Lightning",
-    "Salamander Tail", "Guidance", "Ursine Ring", "Demon Ring", "Intensifier", "Cracked Orb", "Conductor",
-    "Grimhilde's Mirror", "Meal Ticket", "Dillon's Claw", "Bramble Vest", "Leftovers", "Spare Ordnance",
-    "Simple Chest", "Unstable Concoction", "Totem of Life", "Golden Popcorn", "Miner's Flask", "Sewing Kit",
-    "Floating Skull", "Float Boots", "Key Blade", "War Paint", "Sonic Boom", "Gold Frenzy", "Butcher's Cleaver",
-    "Iron Branch", "Knight's Pendant", "Queen's Crown", "Aegis", "Adventurer's Whip", "Axe Thrower's Pendant",
-    "Cosmic Egg", "Battle Standard", "Battle Axe", "Tent", "Masa", "Lunchbox", "Phantasmal Axe", "Gecko Blast",
-    "Soul Cannon", "Greaves", "Pauldron", "Obsidian Knife", "Fork", "Ursa Major", "Canis Major", "Sagitta",
-    "Circinus", "Orion's Sword", "Shrapnel", "Tortoise Shield", "Golden Axe"
-};
-
-const std::string starter_display[9] = {
-    "Bottled Lightning", "Butcher's Cleaver", "Bombushka", "Golden Popcorn", "Guidance", "Phantasmal Axe",
-    "Floating Skull", "Salamander Tail", "Fork"
-};
-
-
-void  Newsave::calculate_seeds(const Floors& floors, const int_fast32_t seed_output_amount,
-                                     const uint_fast32_t seed_amount)
+void Newsave::calculate_seeds(const Floors& floors, const int_fast32_t seed_output_amount,
+                              const uint_fast32_t seed_amount)
 {
     count = seed_output_amount;
 
@@ -46,11 +29,19 @@ void  Newsave::calculate_seeds(const Floors& floors, const int_fast32_t seed_out
     outfile.open("output.txt");
 
 
+    if (!floors.shoguul.skip_shoguul)
+    {
+        outfile << "shoguul: \n";
+        outfile << "floor: " + floors.shoguul.floor_name + "\n";
+        outfile << "item: " + legendary_display[floors.shoguul.item_index] + "\n\n";
+    }
+
     outfile << "items: \n";
     outfile << "mine1: " + starter_display[floors.first_item] + '\n';
     for (const auto& [fst, snd] : floors.rooms)
     {
-        outfile << floors.room_names.at(fst) + ": " + newsave_display[snd] + '\n';
+        if (floors.room_names.at(fst) != "")
+            outfile << floors.room_names.at(fst) + ": " + newsave_display[snd] + '\n';
     }
 
     outfile << "\n\n";
@@ -77,7 +68,7 @@ void  Newsave::calculate_seeds(const Floors& floors, const int_fast32_t seed_out
 
 
     // Write the string to the file
-    outfile << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl <<
+    outfile << std::endl << std::chrono::duration<double, std::milli>(end - start).count() << " ms" << std::endl <<
         std::chrono::duration<double, std::nano>(end - start).count() << " ns" << std::endl;
 
     // Close the file
@@ -85,9 +76,10 @@ void  Newsave::calculate_seeds(const Floors& floors, const int_fast32_t seed_out
 }
 
 
-void Newsave::start_seed(const Floors& room, uint_fast32_t seed, const uint_fast32_t max)
+void Newsave::start_seed(const Floors& floors, uint_fast32_t seed, const uint_fast32_t max)
 {
-    const bool is_empty = room.rooms.empty();
+    const bool skip_floors = floors.skip_floors;
+    const bool skip_shoguul = floors.shoguul.skip_shoguul;
     //#pragma omp parallel for
     while (seed < max && count > 0)
     {
@@ -105,8 +97,7 @@ void Newsave::start_seed(const Floors& room, uint_fast32_t seed, const uint_fast
             const auto range_s = UnityRandom::range(1, 73, UnityRandom::next_uint(seed + 1)) - 72;
             const uint_fast8_t i = range_s > 0 ? 8 : 7 + static_cast<uint_fast8_t>(range_s / 9);
 
-            auto x = room.first_item;
-            if (i != x)
+            if (i != floors.first_item)
                 goto nextSeedGoto;
 
             const uint_fast8_t starter_to_uint8 = starter_to_newsave_index[i];
@@ -115,27 +106,51 @@ void Newsave::start_seed(const Floors& room, uint_fast32_t seed, const uint_fast
         }
 
         // find_floors(newsaveWeight, newsaveWeightz, seed);
-        if (!is_empty)
+
+        for (const auto& [floor_index, item_index] : floors.rooms)
         {
-            for (const auto& [floor_index, item_index] : room.rooms)
+            const auto random_number = UnityRandom::next_uint(seed + floor_index);
+
+
+            if (!skip_shoguul && floor_index == floors.shoguul.floor_index)
             {
-                const auto random_number = UnityRandom::next_uint(seed + floor_index);
+                const bool shoguul_is_open = ::floor(UnityRandom::range(0, 100, random_number) / 5) == 0;
+
+                if (!shoguul_is_open)
+                    goto nextSeedGoto;
+
+                const auto shoguul_rn =
+                    UnityRandom::next_uint((seed + floor_index) * 1812433253 + 1, random_number);
+
+                const auto range = UnityRandom::range(1, 19, random_number) - 1;
+                auto range2 = UnityRandom::range(1, 18, shoguul_rn) - 1;
+
+                if (range <= range2)
+                    range2++;
+
+
+                if (range != floors.shoguul.item_index && range2 != floors.shoguul.item_index)
+                    goto nextSeedGoto;
+            }
+
+            if (!skip_floors)
+            {
+                uint_fast8_t index = 0;
                 {
-                    uint_fast8_t index = 0;
+                    auto range_n = UnityRandom::range(1, newsave_weightz, random_number);
+                    while (range_n > 0)
                     {
-                        auto range_n = UnityRandom::range(1, newsave_weightz, random_number);
-                        while (range_n > 0)
-                        {
-                            if (index > item_index)
-                                goto nextSeedGoto;
+                        if (index > item_index)
+                            goto nextSeedGoto;
 
-                            range_n -= newsave_weight[++index];
-                        }
+                        range_n -= newsave_weight[index++];
                     }
-
-                    newsave_weightz -= newsave_weight[--index];
-                    newsave_weight[index] = 0;
                 }
+                if (--index != item_index)
+                    goto nextSeedGoto;
+
+                newsave_weightz -= newsave_weight[index];
+                newsave_weight[index] = 0;
             }
         }
         //results.push_back(seed);
@@ -145,12 +160,6 @@ void Newsave::start_seed(const Floors& room, uint_fast32_t seed, const uint_fast
         ++seed;
     }
 }
-
-const std::string legendary_display[19] = {
-    "Mjölnir", "Rabbit Gloves", "Transmutagen Blast", "Karmic Scale", "Doom Blade", "Chakram", "Pocket of Holding",
-    "Miniaturizer", "Nullstone", "Glass Cannon", "Mushroom", "Branding Bomb", "Suneater", "Tsar Bomba",
-    "Lockpick", "Shield of Quills", "Soul Guard", "Box of Holding", "Stoneforge Broth"
-};
 
 void Newsave::find_floors(uint_fast8_t (&newsave_weight)[59], uint_fast16_t newsave_weightz, const uint_fast32_t seed)
 {
