@@ -1,17 +1,15 @@
 #pragma once
-#include <atomic>
-#include <fstream>
-
+#include <shared_mutex>
 #include "Floors.h"
 
 class Newsave
 {
 private:
-    inline const static std::string Newsave::starter_display[9] = {
+    const std::string starter_display[9] = {
         "Bottled Lightning", "Butcher's Cleaver", "Bombushka", "Golden Popcorn", "Guidance", "Phantasmal Axe",
         "Floating Skull", "Salamander Tail", "Fork"
     };
-    inline const static std::string Newsave::newsave_display[59] = {
+    const std::string newsave_display[59] = {
         "Bombushka", "Seer's Blood", "Rook's Bomb", "Lightning Bomb", "Galoshes", "Bottled Lightning",
         "Salamander Tail", "Guidance", "Ursine Ring", "Demon Ring", "Intensifier", "Cracked Orb", "Conductor",
         "Grimhilde's Mirror", "Meal Ticket", "Dillon's Claw", "Bramble Vest", "Leftovers", "Spare Ordnance",
@@ -24,18 +22,24 @@ private:
     };
 
 
-    inline const static std::string legendary_display[19] = {
+    const std::string legendary_display[19] = {
         "Lockpick", "Chakram", "Karmic Scale", "Rabbit Gloves", "Doom Blade", "Mjölnir", "Pocket of Holding",
         "Miniaturizer", "Nullstone", "Mushroom", "Glass Cannon", "Branding Bomb", "Suneater", "Transmutagen Blast",
         "Tsar Bomba", "Shield of Quills", "Soul Guard", "Box of Holding", "Stoneforge Broth"
     };
-    inline const static uint_fast8_t Newsave::starter_to_newsave_index[9] = {5, 31, 0, 22, 7, 44, 25, 6, 50};
+    const uint_fast8_t starter_to_newsave_index[9] = {5, 31, 0, 22, 7, 44, 25, 6, 50};
 
-    void find_floors(uint_fast8_t (&newsave_weight)[59], uint_fast16_t newsave_weightz,
-                     const uint_fast32_t seed);
-    void static start_seed(const Floors& floors, uint_fast32_t seed, uint_fast32_t max);
+
+    uint_fast16_t seeds_to_find;
+    const Floors& floors;
+    std::shared_mutex mutex;
+    
+    void start_seed(uint_fast32_t seed, uint_fast32_t max);
 
 public:
-    void static calculate_seeds(const Floors& floors, const int_fast32_t seed_output_amount,
-                                const uint_fast32_t seed_amount);
+    void calculate_seeds(const uint_fast32_t seed_amount);
+    explicit Newsave(const Floors& floors, const uint_fast16_t seeds_to_find)
+        : seeds_to_find(seeds_to_find), floors(floors)
+    {
+    }
 };

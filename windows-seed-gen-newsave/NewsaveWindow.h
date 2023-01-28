@@ -3,6 +3,7 @@
 #include <map>
 #include "Floors.h"
 #include "Newsave.h"
+#include "Output.h"
 #define NOTHING -1
 
 namespace CppCLRWinFormsProject
@@ -317,7 +318,8 @@ namespace CppCLRWinFormsProject
     private:
     private:
         System::Windows::Forms::Label^ label24;
-private: System::Windows::Forms::Button^ button1;
+    private:
+        System::Windows::Forms::Button^ button1;
 
 
     private:
@@ -427,14 +429,14 @@ private: System::Windows::Forms::Button^ button1;
             // 
             // output_seeds
             // 
-            this->output_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
+            this->output_seeds->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){5, 0, 0, 0});
             this->output_seeds->Location = System::Drawing::Point(78, 441);
-            this->output_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 500, 0, 0, 0 });
-            this->output_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+            this->output_seeds->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){500, 0, 0, 0});
+            this->output_seeds->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
             this->output_seeds->Name = L"output_seeds";
             this->output_seeds->Size = System::Drawing::Size(120, 22);
             this->output_seeds->TabIndex = 4;
-            this->output_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
+            this->output_seeds->Value = System::Decimal(gcnew cli::array<System::Int32>(4){10, 0, 0, 0});
             // 
             // mine4
             // 
@@ -791,14 +793,14 @@ private: System::Windows::Forms::Button^ button1;
             // 
             // search_seeds
             // 
-            this->search_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, 0 });
+            this->search_seeds->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){100, 0, 0, 0});
             this->search_seeds->Location = System::Drawing::Point(78, 485);
-            this->search_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
-            this->search_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+            this->search_seeds->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){100000000, 0, 0, 0});
+            this->search_seeds->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
             this->search_seeds->Name = L"search_seeds";
             this->search_seeds->Size = System::Drawing::Size(120, 22);
             this->search_seeds->TabIndex = 36;
-            this->search_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
+            this->search_seeds->Value = System::Decimal(gcnew cli::array<System::Int32>(4){100000000, 0, 0, 0});
             // 
             // outputbox
             // 
@@ -814,8 +816,10 @@ private: System::Windows::Forms::Button^ button1;
             // label23
             // 
             this->label23->AutoSize = true;
-            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
+            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F,
+                                                               System::Drawing::FontStyle::Regular,
+                                                               System::Drawing::GraphicsUnit::Point,
+                                                               static_cast<System::Byte>(0)));
             this->label23->Location = System::Drawing::Point(842, 361);
             this->label23->Name = L"label23";
             this->label23->Size = System::Drawing::Size(102, 29);
@@ -924,16 +928,15 @@ private: System::Windows::Forms::Button^ button1;
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->EndInit();
             this->ResumeLayout(false);
             this->PerformLayout();
-
         }
 #pragma endregion
     private:
-        std::string ToStdString(String^ input)
+        std::string to_std_string(String^ input)
         {
             using namespace System::Runtime::InteropServices;
-            const auto chars = static_cast<const char*>((Marshal::StringToHGlobalAnsi(input)).ToPointer());
+            const auto chars = static_cast<char*>((Marshal::StringToHGlobalAnsi(input)).ToPointer());
             std::string output(chars);
-            Marshal::FreeHGlobal(IntPtr((void*)chars));
+            Marshal::FreeHGlobal(IntPtr(chars));
             return output;
         }
 
@@ -951,14 +954,14 @@ private: System::Windows::Forms::Button^ button1;
                     const auto item_index = static_cast<int>(box->SelectedValue);
 
                     if (box->TabIndex == static_cast<int>(shoguul->SelectedValue))
-                        shoguul_floor_name = ToStdString(box->Name);
+                        shoguul_floor_name = to_std_string(box->Name);
 
 
                     if (item_index == NOTHING || box == mine1 || box == shoguul || box == shoguul_item1)
                         continue;
 
                     rooms[box->TabIndex] = item_index;
-                    room_names[box->TabIndex] = ToStdString(box->Name);
+                    room_names[box->TabIndex] = to_std_string(box->Name);
                 }
             }
 
@@ -967,24 +970,14 @@ private: System::Windows::Forms::Button^ button1;
                                        Shoguul(static_cast<int>(shoguul->SelectedValue),
                                                static_cast<int>(shoguul_item1->SelectedValue), shoguul_floor_name));
 
-            Newsave::calculate_seeds(floors, static_cast<int>(output_seeds->Value),
-                                     static_cast<uint_fast32_t>(search_seeds->Value));
+            Newsave newsave = Newsave(floors, static_cast<int>(output_seeds->Value));
+            newsave.calculate_seeds(static_cast<uint_fast32_t>(search_seeds->Value));
 
             outputbox->Text = "";
 
-            std::ifstream file;
-            file.open("output.txt");
+            outputbox->Text = gcnew String(Output::output_to_string().c_str());
 
-            if (file.is_open())
-            {
-                std::string line;
-                while (std::getline(file, line))
-                    outputbox->AppendText(gcnew System::String((line + "\n").c_str()));
-
-                file.close();
-            }
-            else
-                outputbox->Text = "Unable to get data";
+            Output::reset_output();
         }
 
     private:
@@ -992,15 +985,18 @@ private: System::Windows::Forms::Button^ button1;
         {
             init_dropdowns();
         }
-    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-        for each (Control ^ control in this->Controls)
+
+    private:
+        System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
         {
-            if (control->GetType() == ComboBox::typeid)
+            for each (Control^ control in this->Controls)
             {
-                auto box = static_cast<ComboBox^>(control);
-                box->SelectedIndex = 0;
+                if (control->GetType() == ComboBox::typeid)
+                {
+                    auto box = static_cast<ComboBox^>(control);
+                    box->SelectedIndex = 0;
+                }
             }
         }
-    }
-};
+    };
 }
