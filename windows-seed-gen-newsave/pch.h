@@ -9,4 +9,7 @@
 
 // add headers that you want to pre-compile here
 
+#define NOTHING -1
+#define ANYTHING -1
+
 #endif //PCH_H

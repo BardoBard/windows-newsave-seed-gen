@@ -1,138 +1,142 @@
 #include "pch.h"
 #include "Newsave.h"
 
-#include "Output.h"
-#include "UnityRandom.h"
+#include <fstream>
+#include <vector>
 #include <Windows.h>
+#include "UnityRandom.h"
 
 void Newsave::calculate_seeds(const uint_fast32_t seed_amount)
 {
-    std::vector<std::thread> t;
+    std::ofstream outfile;
+    outfile.open("output.txt");
+    outfile << seeds_to_find;
+    outfile.close();
 
-    const uint_fast8_t threads = std::thread::hardware_concurrency();
+    //make collection of threads
+    std::vector<std::thread> threads;
 
-    const uint_fast32_t seed_split = seed_amount / threads;
+    //find amount of logical cores on pc
+    const uint_fast8_t thread_amount = std::thread::hardware_concurrency();
 
-    t.reserve(threads);
+    //split seeds amongst logical cores
+    const uint_fast32_t seed_split = seed_amount / thread_amount;
 
-    if (!floors.shoguul.skip_shoguul)
-        Output::output_room_item_names.push_back({
-            "Shoguul: \n" + floors.shoguul.floor_name, legendary_display[floors.shoguul.item_index]
-        });
+    //reserve thread collection, so that it doesn't have to reclaim memory each pushback
+    threads.reserve(thread_amount);
 
-    Output::output_room_item_names.push_back({"mine1", starter_display[floors.first_item]});
-
-    for (const auto& [fst, snd] : floors.rooms)
-        if (floors.room_names.at(fst) != "")
-            Output::output_room_item_names.push_back({floors.room_names.at(fst), newsave_display[snd]});
-
-
+    //start timer
     const auto start = std::chrono::steady_clock::now();
 
-    for (int i = 0; i < threads; ++i)
-        t.emplace_back([&, i]
+    //give logical core their portion of seeds (not accounting for remainder)
+    for (int i = 0; i < thread_amount; ++i)
+        threads.emplace_back([&, i]
         {
             start_seed(i * seed_split, (i + 1) * seed_split);
         });
 
 
-    for (auto& thread : t)
+    //join all threads
+    for (auto& thread : threads)
         thread.join();
 
 
+    //end timer
     const auto end = std::chrono::steady_clock::now();
+    outfile.open("output.txt");
+    outfile << "time" + std::to_string(std::chrono::duration<double, std::milli>(end - start).count()) + " ms";
+    outfile.close();
+}
+
+inline bool Newsave::find_shoguul_item(const uint_fast32_t master_seed) const
+{
+    const auto seed = master_seed + output.map.shoguul.floor_index;
+
+    const auto random_number = UnityRandom::next_uint(seed);
+
+    if (const bool is_shoguul_open = floor(UnityRandom::range_inclusive(0, 100, random_number) / 5) == 0; !
+        is_shoguul_open)
+        return false;
+
+    const auto shoguul_rn =
+        UnityRandom::next_uint(seed * 1812433253 + 1, random_number);
+
+    const auto range = UnityRandom::range_inclusive(1, 19, random_number) - 1;
+    auto range2 = UnityRandom::range_inclusive(1, 18, shoguul_rn) - 1;
+
+    if (range <= range2)
+        range2++;
 
 
-    // Write the string to the file
-    Output::output_room_item_names.push_back({
-        "\ntime", std::to_string(std::chrono::duration<double, std::milli>(end - start).count()) + " ms"
-    });
+    return range == output.map.shoguul.item_index || range2 == output.map.shoguul.item_index;
 }
 
 
-void Newsave::start_seed(uint_fast32_t seed, const uint_fast32_t max)
+void Newsave::start_seed(uint_fast32_t master_seed, const uint_fast32_t max)
 {
-    const bool skip_floors = floors.skip_floors;
-    const bool skip_shoguul = floors.shoguul.skip_shoguul;
-    //#pragma omp parallel for
-    while (seed < max && seeds_to_find > 0)
+    //loop through seed until max or until x amount of seeds have been found
+    for (; master_seed < max && seeds_to_find > 0; master_seed++)
     {
-        //reset variables every loop
-        uint_fast8_t newsave_weight[59] = {
-            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 3, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9, 3,
-            9,
-            3,
-            9, 3, 9, 9, 9, 3, 9, 9, 1, 3, 5, 5, 3, 3, 9, 9, 9, 9, 9, 9, 9, 3
-        };
-        uint_fast16_t newsave_weightz = 449;
-
-
         {
-            const auto range_s = UnityRandom::range(1, 73, UnityRandom::next_uint(seed + 1)) - 72;
-            const uint_fast8_t i = range_s > 0 ? 8 : 7 + static_cast<uint_fast8_t>(range_s / 9);
-
-            if (i != floors.first_item)
-                goto nextSeedGoto;
-
-            const uint_fast8_t starter_to_uint8 = starter_to_newsave_index[i];
-            newsave_weightz -= newsave_weight[starter_to_uint8];
-            newsave_weight[starter_to_uint8] = 0;
-        }
-
-        // find_floors(newsaveWeight, newsaveWeightz, seed);
-
-        for (const auto& [floor_index, item_index] : floors.rooms)
-        {
-            const auto random_number = UnityRandom::next_uint(seed + floor_index);
+            //reset variables every loop
+            uint_fast8_t newsave_weight[59] = {
+                9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 3, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9, 3,
+                9,
+                3,
+                9, 3, 9, 9, 9, 3, 9, 9, 1, 3, 5, 5, 3, 3, 9, 9, 9, 9, 9, 9, 9, 3
+            };
+            uint_fast16_t total_weight = 449;
 
 
-            if (!skip_shoguul && floor_index == floors.shoguul.floor_index)
             {
-                const bool shoguul_is_open = ::floor(UnityRandom::range(0, 100, random_number) / 5) == 0;
+                const auto range_s = UnityRandom::range_inclusive(1, 73, UnityRandom::next_uint(master_seed + 1)) - 72;
+                const uint_fast8_t i = range_s > 0 ? 8 : 7 + static_cast<uint_fast8_t>(range_s / 9);
 
-                if (!shoguul_is_open)
-                    goto nextSeedGoto;
+                if (i != output.map.first_item && output.map.first_item != ANYTHING)
+                    continue;
 
-                const auto shoguul_rn =
-                    UnityRandom::next_uint((seed + floor_index) * 1812433253 + 1, random_number);
-
-                const auto range = UnityRandom::range(1, 19, random_number) - 1;
-                auto range2 = UnityRandom::range(1, 18, shoguul_rn) - 1;
-
-                if (range <= range2)
-                    range2++;
-
-
-                if (range != floors.shoguul.item_index && range2 != floors.shoguul.item_index)
-                    goto nextSeedGoto;
+                const uint_fast8_t starter_to_uint8 = starter_to_newsave_index[i];
+                total_weight -= newsave_weight[starter_to_uint8];
+                newsave_weight[starter_to_uint8] = 0;
             }
+            if (!output.map.shoguul.skip)
+                if (!find_shoguul_item(master_seed))
+                    continue;
 
-            if (!skip_floors)
-            {
-                uint_fast8_t index = 0;
-                {
-                    auto range_n = UnityRandom::range(1, newsave_weightz, random_number);
-                    while (range_n > 0)
-                    {
-                        if (index > item_index)
-                            goto nextSeedGoto;
 
-                        range_n -= newsave_weight[index++];
-                    }
-                }
-                if (--index != item_index)
-                    goto nextSeedGoto;
+            if (!find_floor_items(master_seed, total_weight, newsave_weight))
+                continue;
 
-                newsave_weightz -= newsave_weight[index];
-                newsave_weight[index] = 0;
-            }
+            _InterlockedDecrement(&seeds_to_find);
+            mutex.lock();
+            output.output_seeds.push_back(master_seed);
+            mutex.unlock();
         }
-        //results.push_back(seed);
-        _InterlockedDecrement(&seeds_to_find);
-        mutex.lock();
-        Output::output_seeds.push_back(seed);
-        mutex.unlock();
-    nextSeedGoto:
-        ++seed;
     }
+}
+
+inline bool Newsave::find_floor_items(const uint_fast32_t master_seed, uint_fast16_t& total_weight,
+                                      uint8_t (&newsave_weight)[59]) const
+{
+    for (const auto& floor : output.map.floors)
+    {
+        const auto random_number = UnityRandom::next_uint(master_seed + floor.floor_index);
+        uint_fast8_t index = 0;
+        {
+            auto range_n = UnityRandom::range_inclusive(1, total_weight, random_number);
+            while (range_n > 0)
+            {
+                if (index > floor.item_index)
+                    return false;
+
+                range_n -= newsave_weight[index++];
+            }
+        }
+        if (--index != floor.item_index)
+            return false;
+
+        total_weight -= newsave_weight[index];
+        newsave_weight[index] = 0;
+    }
+    return true;
 }

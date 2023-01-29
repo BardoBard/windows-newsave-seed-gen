@@ -132,15 +132,17 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Floor.h" />
+    <ClInclude Include="Names.h" />
     <ClInclude Include="Newsave.h" />
     <ClInclude Include="NewsaveWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Output.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Floors.h" />
     <ClInclude Include="Shoguul.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="UnityRandom.h" />
   </ItemGroup>
   <ItemGroup>
@@ -155,8 +157,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Floors.cpp" />
-    <ClCompile Include="Shoguul.cpp" />
     <ClCompile Include="UnityRandom.cpp" />
   </ItemGroup>
   <ItemGroup>
