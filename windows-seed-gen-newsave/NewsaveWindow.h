@@ -398,6 +398,7 @@ namespace CppCLRWinFormsProject
             // 
             // find_seeds_btn
             // 
+            this->find_seeds_btn->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->find_seeds_btn->Location = System::Drawing::Point(415, 449);
             this->find_seeds_btn->Name = L"find_seeds_btn";
             this->find_seeds_btn->Size = System::Drawing::Size(194, 45);
@@ -426,14 +427,14 @@ namespace CppCLRWinFormsProject
             // 
             // amount_of_seeds_to_find
             // 
-            this->amount_of_seeds_to_find->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){5, 0, 0, 0});
+            this->amount_of_seeds_to_find->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
             this->amount_of_seeds_to_find->Location = System::Drawing::Point(78, 441);
-            this->amount_of_seeds_to_find->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){500, 0, 0, 0});
-            this->amount_of_seeds_to_find->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->amount_of_seeds_to_find->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000000, 0, 0, 0 });
+            this->amount_of_seeds_to_find->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->amount_of_seeds_to_find->Name = L"amount_of_seeds_to_find";
             this->amount_of_seeds_to_find->Size = System::Drawing::Size(120, 22);
             this->amount_of_seeds_to_find->TabIndex = 4;
-            this->amount_of_seeds_to_find->Value = System::Decimal(gcnew cli::array<System::Int32>(4){10, 0, 0, 0});
+            this->amount_of_seeds_to_find->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
             // 
             // mine4
             // 
@@ -790,19 +791,14 @@ namespace CppCLRWinFormsProject
             // 
             // amount_of_seeds_to_loop
             // 
-            this->amount_of_seeds_to_loop->Increment =
-                System::Decimal(gcnew cli::array<System::Int32>(4){100, 0, 0, 0});
+            this->amount_of_seeds_to_loop->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, 0 });
             this->amount_of_seeds_to_loop->Location = System::Drawing::Point(78, 485);
-            this->amount_of_seeds_to_loop->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){
-                100000000, 0, 0, 0
-            });
-            this->amount_of_seeds_to_loop->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->amount_of_seeds_to_loop->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
+            this->amount_of_seeds_to_loop->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
             this->amount_of_seeds_to_loop->Name = L"amount_of_seeds_to_loop";
             this->amount_of_seeds_to_loop->Size = System::Drawing::Size(120, 22);
             this->amount_of_seeds_to_loop->TabIndex = 36;
-            this->amount_of_seeds_to_loop->Value = System::Decimal(gcnew cli::array<System::Int32>(4){
-                100000000, 0, 0, 0
-            });
+            this->amount_of_seeds_to_loop->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
             // 
             // outputbox
             // 
@@ -818,10 +814,8 @@ namespace CppCLRWinFormsProject
             // label23
             // 
             this->label23->AutoSize = true;
-            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F,
-                                                               System::Drawing::FontStyle::Regular,
-                                                               System::Drawing::GraphicsUnit::Point,
-                                                               static_cast<System::Byte>(0)));
+            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+                static_cast<System::Byte>(0)));
             this->label23->Location = System::Drawing::Point(842, 361);
             this->label23->Name = L"label23";
             this->label23->Size = System::Drawing::Size(102, 29);
@@ -857,6 +851,7 @@ namespace CppCLRWinFormsProject
             // 
             // button1
             // 
+            this->button1->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->button1->Location = System::Drawing::Point(895, 501);
             this->button1->Name = L"button1";
             this->button1->Size = System::Drawing::Size(75, 23);
@@ -867,6 +862,7 @@ namespace CppCLRWinFormsProject
             // 
             // NewsaveWindow
             // 
+            this->AcceptButton = this->find_seeds_btn;
             this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
@@ -930,6 +926,7 @@ namespace CppCLRWinFormsProject
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_loop))->EndInit();
             this->ResumeLayout(false);
             this->PerformLayout();
+
         }
 #pragma endregion
     private:
@@ -947,8 +944,7 @@ namespace CppCLRWinFormsProject
             Output output = get_output_from_user();
 
             //this calculates the seeds and puts it into output
-            Newsave(output, static_cast<int_fast16_t>(amount_of_seeds_to_find->Value)).calculate_seeds(
-                static_cast<uint_fast32_t>(amount_of_seeds_to_loop->Value));
+            Newsave(output).calculate_seeds(static_cast<uint_fast32_t>(amount_of_seeds_to_loop->Value));
 
 
             //show user new output data
@@ -986,7 +982,7 @@ namespace CppCLRWinFormsProject
                                 Shoguul(static_cast<int_fast16_t>(shoguul->SelectedValue),
                                         static_cast<int_fast16_t>(shoguul_item1->SelectedValue)));
 
-            return Output(map, static_cast<uint16_t>(amount_of_seeds_to_find->Value));
+            return Output(map, static_cast<uint32_t>(amount_of_seeds_to_find->Value));
         }
 
     private:

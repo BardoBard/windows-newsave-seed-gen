@@ -26,6 +26,10 @@ public:
     {
     }
 
+    Floor(): floor_index(0), item_index(0)
+    {
+    }
+
     /**
      * \brief floor index
      */

@@ -7,18 +7,21 @@
 class Output
 {
 public:
-    //ctor
-    explicit Output(const Map& map, const uint16_t amount_of_seeds_to_find = 10,
-                    const std::vector<uint_fast32_t>& output_seeds = {}) : map(map)
+    /**
+     * \brief ctor
+     * \param map map object
+     * \param amount_of_seeds_to_return amount of seeds the output has to display
+     */
+    explicit Output(const Map& map, const uint32_t amount_of_seeds_to_return = 10) : map(map),
+        amount_of_seeds_to_return(amount_of_seeds_to_return)
     {
-        std::empty(output_seeds)
-            ? this->output_seeds.reserve(amount_of_seeds_to_find)
-            : this->output_seeds = output_seeds;
+        this->output_seeds.reserve(amount_of_seeds_to_return);
     }
 
     //variables
     Map map;
     std::vector<uint_fast32_t> output_seeds = {};
+    long amount_of_seeds_to_return;
 
     //properties
     void set_output_seeds(const std::vector<uint_fast32_t> output_seeds)

@@ -21,4 +21,8 @@ public:
         Floor(floor_index, item_index), skip(floor_index == NOTHING)
     {
     }
+
+    Shoguul() : Floor(), skip(false)
+    {
+    }
 };
