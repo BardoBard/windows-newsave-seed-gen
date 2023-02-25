@@ -158,15 +158,20 @@ inline bool Newsave::find_floor_items(const uint_fast32_t& master_seed, uint_fas
                 range_n -= newsave_weight[index++];
         }
         --index;
-        if (index != floor.item_index) //if index != item_index then we don't have to keep searching
-            return false;
-
-        //TODO: xeap add a checkbox to randomize this :D
-        // if (std::find_if(output.map.floors.cbegin(), output.map.floors.cend(), [index](const Floor& floor) -> bool
-        // {
-        //     return floor.item_index == index;
-        // }) == output.map.floors.cend()) //if index != item_index then we don't have to keep searching
-        //     return false;
+        if (output.randomize)
+        {
+            if (std::find_if(output.map.floors.cbegin(), output.map.floors.cend(),
+                             [index](const Floor& floor) -> bool
+                             {
+                                 return floor.item_index == index;
+                             }) == output.map.floors.cend())
+                return false;
+        }
+        else
+        {
+            if (index != floor.item_index) //if index != item_index then we don't have to keep searching
+                return false;
+        }
 
         total_weight -= newsave_weight[index]; //reduce total_weight
         newsave_weight[index] = 0; //remove weight from the pool
