@@ -1,9 +1,6 @@
 #pragma once
-#include <cstdint>
-#include <map>
-#include "Floors.h"
 #include "Newsave.h"
-#define NOTHING -1
+#include "Output.h"
 
 namespace CppCLRWinFormsProject
 {
@@ -24,9 +21,6 @@ namespace CppCLRWinFormsProject
         {
             InitializeComponent();
             this->MaximizeBox = false;
-            //
-            //TODO: Add the constructor code here
-            //
         }
 
         void add_data_to_dropdowns(Generic::Dictionary<int, String^>^ items)
@@ -53,6 +47,7 @@ namespace CppCLRWinFormsProject
         void init_dropdowns()
         {
             Generic::Dictionary<int, String^>^ items = gcnew Generic::Dictionary<int, String^>();
+            items->Add(-1, "Anything");
             items->Add(0, "Bottled Lightning");
             items->Add(1, "Butcher's Cleaver");
             items->Add(2, "Bombushka");
@@ -224,7 +219,9 @@ namespace CppCLRWinFormsProject
     private:
         System::Windows::Forms::ComboBox^ mine3;
     private:
-        System::Windows::Forms::NumericUpDown^ output_seeds;
+        System::Windows::Forms::NumericUpDown^ amount_of_seeds_to_find;
+
+    private:
     private:
         System::Windows::Forms::ComboBox^ mine4;
     private:
@@ -304,7 +301,8 @@ namespace CppCLRWinFormsProject
     private:
         System::Windows::Forms::Label^ label22;
     private:
-        System::Windows::Forms::NumericUpDown^ search_seeds;
+        System::Windows::Forms::NumericUpDown^ amount_of_seeds_to_loop;
+    private:
     private:
     private:
         System::Windows::Forms::RichTextBox^ outputbox;
@@ -317,7 +315,10 @@ namespace CppCLRWinFormsProject
     private:
     private:
         System::Windows::Forms::Label^ label24;
-private: System::Windows::Forms::Button^ button1;
+    private:
+        System::Windows::Forms::Button^ button1;
+    private:
+        System::Windows::Forms::CheckBox^ RandomizeCheckBox;
 
 
     private:
@@ -337,7 +338,7 @@ private: System::Windows::Forms::Button^ button1;
             this->find_seeds_btn = (gcnew System::Windows::Forms::Button());
             this->mine2 = (gcnew System::Windows::Forms::ComboBox());
             this->mine3 = (gcnew System::Windows::Forms::ComboBox());
-            this->output_seeds = (gcnew System::Windows::Forms::NumericUpDown());
+            this->amount_of_seeds_to_find = (gcnew System::Windows::Forms::NumericUpDown());
             this->mine4 = (gcnew System::Windows::Forms::ComboBox());
             this->label1 = (gcnew System::Windows::Forms::Label());
             this->label2 = (gcnew System::Windows::Forms::Label());
@@ -377,15 +378,16 @@ private: System::Windows::Forms::Button^ button1;
             this->label20 = (gcnew System::Windows::Forms::Label());
             this->label21 = (gcnew System::Windows::Forms::Label());
             this->label22 = (gcnew System::Windows::Forms::Label());
-            this->search_seeds = (gcnew System::Windows::Forms::NumericUpDown());
+            this->amount_of_seeds_to_loop = (gcnew System::Windows::Forms::NumericUpDown());
             this->outputbox = (gcnew System::Windows::Forms::RichTextBox());
             this->label23 = (gcnew System::Windows::Forms::Label());
             this->shoguul = (gcnew System::Windows::Forms::ComboBox());
             this->shoguul_item1 = (gcnew System::Windows::Forms::ComboBox());
             this->label24 = (gcnew System::Windows::Forms::Label());
             this->button1 = (gcnew System::Windows::Forms::Button());
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->output_seeds))->BeginInit();
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->BeginInit();
+            this->RandomizeCheckBox = (gcnew System::Windows::Forms::CheckBox());
+            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_find))->BeginInit();
+            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_loop))->BeginInit();
             this->SuspendLayout();
             // 
             // mine1
@@ -395,10 +397,11 @@ private: System::Windows::Forms::Button^ button1;
             this->mine1->Location = System::Drawing::Point(50, 37);
             this->mine1->Name = L"mine1";
             this->mine1->Size = System::Drawing::Size(121, 24);
-            this->mine1->TabIndex = 0;
+            this->mine1->TabIndex = 1;
             // 
             // find_seeds_btn
             // 
+            this->find_seeds_btn->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->find_seeds_btn->Location = System::Drawing::Point(415, 449);
             this->find_seeds_btn->Name = L"find_seeds_btn";
             this->find_seeds_btn->Size = System::Drawing::Size(194, 45);
@@ -425,16 +428,18 @@ private: System::Windows::Forms::Button^ button1;
             this->mine3->Size = System::Drawing::Size(121, 24);
             this->mine3->TabIndex = 3;
             // 
-            // output_seeds
+            // amount_of_seeds_to_find
             // 
-            this->output_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
-            this->output_seeds->Location = System::Drawing::Point(78, 441);
-            this->output_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 500, 0, 0, 0 });
-            this->output_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-            this->output_seeds->Name = L"output_seeds";
-            this->output_seeds->Size = System::Drawing::Size(120, 22);
-            this->output_seeds->TabIndex = 4;
-            this->output_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10, 0, 0, 0 });
+            this->amount_of_seeds_to_find->Increment = System::Decimal(gcnew cli::array<System::Int32>(4){5, 0, 0, 0});
+            this->amount_of_seeds_to_find->Location = System::Drawing::Point(78, 441);
+            this->amount_of_seeds_to_find->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){
+                1000000, 0, 0, 0
+            });
+            this->amount_of_seeds_to_find->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->amount_of_seeds_to_find->Name = L"amount_of_seeds_to_find";
+            this->amount_of_seeds_to_find->Size = System::Drawing::Size(120, 22);
+            this->amount_of_seeds_to_find->TabIndex = 4;
+            this->amount_of_seeds_to_find->Value = System::Decimal(gcnew cli::array<System::Int32>(4){10, 0, 0, 0});
             // 
             // mine4
             // 
@@ -789,16 +794,21 @@ private: System::Windows::Forms::Button^ button1;
             this->label22->TabIndex = 35;
             this->label22->Text = L"Amount of seeds to search through";
             // 
-            // search_seeds
+            // amount_of_seeds_to_loop
             // 
-            this->search_seeds->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, 0 });
-            this->search_seeds->Location = System::Drawing::Point(78, 485);
-            this->search_seeds->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
-            this->search_seeds->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-            this->search_seeds->Name = L"search_seeds";
-            this->search_seeds->Size = System::Drawing::Size(120, 22);
-            this->search_seeds->TabIndex = 36;
-            this->search_seeds->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100000000, 0, 0, 0 });
+            this->amount_of_seeds_to_loop->Increment =
+                System::Decimal(gcnew cli::array<System::Int32>(4){100, 0, 0, 0});
+            this->amount_of_seeds_to_loop->Location = System::Drawing::Point(78, 485);
+            this->amount_of_seeds_to_loop->Maximum = System::Decimal(gcnew cli::array<System::Int32>(4){
+                100000000, 0, 0, 0
+            });
+            this->amount_of_seeds_to_loop->Minimum = System::Decimal(gcnew cli::array<System::Int32>(4){1, 0, 0, 0});
+            this->amount_of_seeds_to_loop->Name = L"amount_of_seeds_to_loop";
+            this->amount_of_seeds_to_loop->Size = System::Drawing::Size(120, 22);
+            this->amount_of_seeds_to_loop->TabIndex = 36;
+            this->amount_of_seeds_to_loop->Value = System::Decimal(gcnew cli::array<System::Int32>(4){
+                100000000, 0, 0, 0
+            });
             // 
             // outputbox
             // 
@@ -814,8 +824,10 @@ private: System::Windows::Forms::Button^ button1;
             // label23
             // 
             this->label23->AutoSize = true;
-            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-                static_cast<System::Byte>(0)));
+            this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 13.8F,
+                                                               System::Drawing::FontStyle::Regular,
+                                                               System::Drawing::GraphicsUnit::Point,
+                                                               static_cast<System::Byte>(0)));
             this->label23->Location = System::Drawing::Point(842, 361);
             this->label23->Name = L"label23";
             this->label23->Size = System::Drawing::Size(102, 29);
@@ -851,6 +863,7 @@ private: System::Windows::Forms::Button^ button1;
             // 
             // button1
             // 
+            this->button1->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->button1->Location = System::Drawing::Point(895, 501);
             this->button1->Name = L"button1";
             this->button1->Size = System::Drawing::Size(75, 23);
@@ -859,20 +872,32 @@ private: System::Windows::Forms::Button^ button1;
             this->button1->UseVisualStyleBackColor = true;
             this->button1->Click += gcnew System::EventHandler(this, &NewsaveWindow::button1_Click);
             // 
+            // RandomizeCheckBox
+            // 
+            this->RandomizeCheckBox->AutoSize = true;
+            this->RandomizeCheckBox->Location = System::Drawing::Point(673, 474);
+            this->RandomizeCheckBox->Name = L"RandomizeCheckBox";
+            this->RandomizeCheckBox->Size = System::Drawing::Size(98, 20);
+            this->RandomizeCheckBox->TabIndex = 44;
+            this->RandomizeCheckBox->Text = L"Randomize";
+            this->RandomizeCheckBox->UseVisualStyleBackColor = true;
+            // 
             // NewsaveWindow
             // 
+            this->AcceptButton = this->find_seeds_btn;
             this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->AutoSizeMode = System::Windows::Forms::AutoSizeMode::GrowAndShrink;
             this->BackColor = System::Drawing::SystemColors::Menu;
             this->ClientSize = System::Drawing::Size(982, 533);
+            this->Controls->Add(this->RandomizeCheckBox);
             this->Controls->Add(this->button1);
             this->Controls->Add(this->label24);
             this->Controls->Add(this->shoguul_item1);
             this->Controls->Add(this->shoguul);
             this->Controls->Add(this->label23);
             this->Controls->Add(this->outputbox);
-            this->Controls->Add(this->search_seeds);
+            this->Controls->Add(this->amount_of_seeds_to_loop);
             this->Controls->Add(this->label22);
             this->Controls->Add(this->label21);
             this->Controls->Add(this->label20);
@@ -912,7 +937,7 @@ private: System::Windows::Forms::Button^ button1;
             this->Controls->Add(this->label2);
             this->Controls->Add(this->label1);
             this->Controls->Add(this->mine4);
-            this->Controls->Add(this->output_seeds);
+            this->Controls->Add(this->amount_of_seeds_to_find);
             this->Controls->Add(this->mine3);
             this->Controls->Add(this->mine2);
             this->Controls->Add(this->find_seeds_btn);
@@ -920,71 +945,66 @@ private: System::Windows::Forms::Button^ button1;
             this->Name = L"NewsaveWindow";
             this->Text = L"Newsave Seed Gen (cool version)";
             this->Load += gcnew System::EventHandler(this, &NewsaveWindow::NewsaveWindow_Load);
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->output_seeds))->EndInit();
-            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->search_seeds))->EndInit();
+            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_find))->EndInit();
+            (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_loop))->EndInit();
             this->ResumeLayout(false);
             this->PerformLayout();
-
         }
 #pragma endregion
     private:
-        std::string ToStdString(String^ input)
+        std::string to_std_string(String^ input)
         {
-            using namespace System::Runtime::InteropServices;
-            const auto chars = static_cast<const char*>((Marshal::StringToHGlobalAnsi(input)).ToPointer());
+            const auto chars = static_cast<char*>(Runtime::InteropServices::Marshal::StringToHGlobalAnsi(input).
+                ToPointer());
             std::string output(chars);
-            Marshal::FreeHGlobal(IntPtr((void*)chars));
+            Runtime::InteropServices::Marshal::FreeHGlobal(IntPtr(chars));
             return output;
         }
 
         System::Void find_seeds_btn_Click(System::Object^ sender, System::EventArgs^ e)
         {
-            std::map<int_fast16_t, std::string> room_names;
-            std::map<int_fast16_t, int_fast16_t> rooms;
-            std::string shoguul_floor_name = "";
+            Output output = get_output_from_user();
 
+            //this calculates the seeds and puts it into output
+            Newsave(output).calculate_seeds(static_cast<uint_fast32_t>(amount_of_seeds_to_loop->Value));
+
+
+            //show user new output data
+            outputbox->Text = gcnew String(output.output_to_string().c_str());
+        }
+
+    private:
+        /**
+         * \brief gets all user input from combo boxes and input fields and puts it in an object
+         * \return Output object with all floors (map)
+         */
+        Output get_output_from_user()
+        {
+            std::vector<Floor> floors = {}; //init floors
+
+            //foreach loop over every "controls" (aka elements on screen)
             for each (Control^ control in this->Controls)
             {
                 if (control->GetType() == ComboBox::typeid)
                 {
                     auto box = static_cast<ComboBox^>(control);
-                    const auto item_index = static_cast<int>(box->SelectedValue);
+                    const auto item_index = static_cast<int_fast16_t>(box->SelectedValue); //selected item
 
-                    if (box->TabIndex == static_cast<int>(shoguul->SelectedValue))
-                        shoguul_floor_name = ToStdString(box->Name);
-
-
+                    //filter special combo boxes
                     if (item_index == NOTHING || box == mine1 || box == shoguul || box == shoguul_item1)
                         continue;
 
-                    rooms[box->TabIndex] = item_index;
-                    room_names[box->TabIndex] = ToStdString(box->Name);
+                    //add floors
+                    floors.push_back(Floor(box->TabIndex, item_index));
                 }
             }
 
+            //put everything together in a map, see more at map
+            const Map map = Map(static_cast<int>(mine1->SelectedValue), floors,
+                                Shoguul(static_cast<int_fast16_t>(shoguul->SelectedValue),
+                                        static_cast<int_fast16_t>(shoguul_item1->SelectedValue)));
 
-            const auto floors = Floors(static_cast<int>(mine1->SelectedValue), rooms, room_names,
-                                       Shoguul(static_cast<int>(shoguul->SelectedValue),
-                                               static_cast<int>(shoguul_item1->SelectedValue), shoguul_floor_name));
-
-            Newsave::calculate_seeds(floors, static_cast<int>(output_seeds->Value),
-                                     static_cast<uint_fast32_t>(search_seeds->Value));
-
-            outputbox->Text = "";
-
-            std::ifstream file;
-            file.open("output.txt");
-
-            if (file.is_open())
-            {
-                std::string line;
-                while (std::getline(file, line))
-                    outputbox->AppendText(gcnew System::String((line + "\n").c_str()));
-
-                file.close();
-            }
-            else
-                outputbox->Text = "Unable to get data";
+            return Output(map, static_cast<uint32_t>(amount_of_seeds_to_find->Value), RandomizeCheckBox->Checked);
         }
 
     private:
@@ -992,15 +1012,19 @@ private: System::Windows::Forms::Button^ button1;
         {
             init_dropdowns();
         }
-    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-        for each (Control ^ control in this->Controls)
+
+    private:
+        System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
         {
-            if (control->GetType() == ComboBox::typeid)
+            for each (Control^ control in this->Controls)
             {
-                auto box = static_cast<ComboBox^>(control);
-                box->SelectedIndex = 0;
+                if (control->GetType() == ComboBox::typeid)
+                {
+                    auto box = static_cast<ComboBox^>(control);
+                    box->SelectedIndex = 0;
+                }
             }
+            outputbox->Text = "";
         }
-    }
-};
+    };
 }

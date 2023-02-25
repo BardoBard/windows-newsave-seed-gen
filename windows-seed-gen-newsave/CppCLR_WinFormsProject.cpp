@@ -2,11 +2,6 @@
 
 using namespace System;
 
-// int main(array<System::String ^> ^args)
-// {
-//    return 0;
-// }
-
 #include "NewsaveWindow.h"
 
 using namespace System::Windows::Forms;

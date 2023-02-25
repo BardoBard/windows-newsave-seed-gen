@@ -132,14 +132,17 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Floor.h" />
+    <ClInclude Include="Names.h" />
     <ClInclude Include="Newsave.h" />
     <ClInclude Include="NewsaveWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Output.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Floors.h" />
     <ClInclude Include="Shoguul.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="UnityRandom.h" />
   </ItemGroup>
   <ItemGroup>
@@ -147,14 +150,13 @@
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
     <ClCompile Include="Newsave.cpp" />
     <ClCompile Include="NewsaveWindow.cpp" />
+    <ClCompile Include="Output.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Floors.cpp" />
-    <ClCompile Include="Shoguul.cpp" />
     <ClCompile Include="UnityRandom.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +175,5 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
