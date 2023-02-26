@@ -9,9 +9,10 @@
 
 /**
  * \brief looks for items provided in object
+ * \param start_seed start
  * \param seeds_to_loop amount of seeds to look through, starts at 0
  */
-void Newsave::calculate_seeds(const uint_fast32_t seeds_to_loop)
+void Newsave::calculate_seeds(const uint_fast32_t start_seed, const uint_fast32_t seeds_to_loop)
 {
     //find amount of logical cores on pc
     const uint_fast8_t thread_amount = std::thread::hardware_concurrency();
@@ -25,7 +26,7 @@ void Newsave::calculate_seeds(const uint_fast32_t seeds_to_loop)
     //TODO: make threadpool class including mutex
 
     //split seeds amongst logical cores
-    const uint_fast32_t seed_split = seeds_to_loop / thread_amount;
+    const uint_fast32_t seed_split = (seeds_to_loop - start_seed) / thread_amount;
 
     //start timer
     const auto start = std::chrono::steady_clock::now();
@@ -34,7 +35,7 @@ void Newsave::calculate_seeds(const uint_fast32_t seeds_to_loop)
     for (int i = 0; i < thread_amount; ++i)
         threads.emplace_back([&, i]
         {
-            find_seeds(i * seed_split, (i + 1) * seed_split);
+            find_seeds(start_seed + i * seed_split, start_seed + (i + 1) * seed_split);
         });
 
     //join all threads

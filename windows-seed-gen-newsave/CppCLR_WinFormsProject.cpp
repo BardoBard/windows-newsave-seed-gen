@@ -2,7 +2,7 @@
 
 using namespace System;
 
-#include "NewsaveWindow.h"
+#include "MainWindow.h"
 
 using namespace System::Windows::Forms;
 
@@ -11,6 +11,6 @@ int main()
 {
   Application::EnableVisualStyles();
   Application::SetCompatibleTextRenderingDefault(false);
-  Application::Run(gcnew CppCLRWinFormsProject::NewsaveWindow());
+  Application::Run(gcnew CppCLRWinFormsProject::MainWindow());
   return 0;
 }

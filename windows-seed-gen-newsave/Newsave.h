@@ -15,7 +15,7 @@ private:
     inline bool find_floor_items(const uint_fast32_t& master_seed, uint_fast16_t& total_weight,
                                  uint8_t (&newsave_weight)[59]) const;
 public:
-    void calculate_seeds(const uint_fast32_t seeds_to_loop = 100000000);
+    void calculate_seeds(const uint_fast32_t start_seed = 0, const uint_fast32_t seeds_to_loop = 100000000);
 
     /**
      * \brief ctor

@@ -32,10 +32,25 @@
     <ClInclude Include="UnityRandom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Floors.h">
+    <ClInclude Include="NewsaveWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NewsaveWindow.h">
+    <ClInclude Include="Floor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Names.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shoguul.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -55,10 +70,13 @@
     <ClCompile Include="UnityRandom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Floors.cpp">
+    <ClCompile Include="NewsaveWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NewsaveWindow.cpp">
+    <ClCompile Include="Output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

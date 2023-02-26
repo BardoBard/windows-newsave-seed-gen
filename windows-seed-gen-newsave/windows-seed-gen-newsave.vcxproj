@@ -133,6 +133,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="MainWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Names.h" />
     <ClInclude Include="Newsave.h" />
     <ClInclude Include="NewsaveWindow.h">
@@ -143,11 +146,13 @@
     <ClInclude Include="Shoguul.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="UnityRandom.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="CppCLR_WinFormsProject.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Newsave.cpp" />
     <ClCompile Include="NewsaveWindow.cpp" />
     <ClCompile Include="Output.cpp" />
@@ -157,6 +162,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="UnityRandom.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,9 +176,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NewsaveWindow.resx">
       <DependentUpon>NewsaveWindow.h</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tree.resx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
