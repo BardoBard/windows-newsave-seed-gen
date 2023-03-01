@@ -1,6 +1,8 @@
 #pragma once
+#include <functional>
+
 #include "Newsave.h"
-#include "Output.h"
+#include "UserInput.h"
 
 namespace CppCLRWinFormsProject
 {
@@ -10,6 +12,12 @@ namespace CppCLRWinFormsProject
     using namespace System::Windows::Forms;
     using namespace System::Data;
     using namespace System::Drawing;
+
+    inline auto find_seeds_lambda = [&](const Newsave& newsave, const uint_fast32_t start_seed,
+                                        const uint_fast32_t end_seed)
+    {
+        newsave.find_seeds(start_seed, end_seed);
+    };
 
     /// <summary>
     /// Summary for NewsaveWindow
@@ -334,6 +342,12 @@ namespace CppCLRWinFormsProject
         System::Windows::Forms::CheckBox^ RandomizeCheckBox;
     private:
         System::Windows::Forms::Button^ button1;
+    private:
+        System::Windows::Forms::RadioButton^ NewsaveButton;
+    private:
+        System::Windows::Forms::RadioButton^ radioButton2;
+    private:
+        System::Windows::Forms::OpenFileDialog^ FileExplorer;
 
 
     private:
@@ -402,6 +416,9 @@ namespace CppCLRWinFormsProject
             this->RandomizeCheckBox = (gcnew System::Windows::Forms::CheckBox());
             this->button1 = (gcnew System::Windows::Forms::Button());
             this->outputbox = (gcnew System::Windows::Forms::RichTextBox());
+            this->NewsaveButton = (gcnew System::Windows::Forms::RadioButton());
+            this->radioButton2 = (gcnew System::Windows::Forms::RadioButton());
+            this->FileExplorer = (gcnew System::Windows::Forms::OpenFileDialog());
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_find))->BeginInit();
             this->tableLayoutPanel1->SuspendLayout();
             (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amount_of_seeds_to_loop))->BeginInit();
@@ -893,6 +910,8 @@ namespace CppCLRWinFormsProject
             this->tableLayoutPanel1->Controls->Add(this->RandomizeCheckBox, 3, 12);
             this->tableLayoutPanel1->Controls->Add(this->button1, 4, 12);
             this->tableLayoutPanel1->Controls->Add(this->outputbox, 4, 4);
+            this->tableLayoutPanel1->Controls->Add(this->NewsaveButton, 3, 11);
+            this->tableLayoutPanel1->Controls->Add(this->radioButton2, 4, 11);
             this->tableLayoutPanel1->Dock = System::Windows::Forms::DockStyle::Fill;
             this->tableLayoutPanel1->Location = System::Drawing::Point(0, 0);
             this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
@@ -1070,6 +1089,38 @@ namespace CppCLRWinFormsProject
             this->outputbox->TabIndex = 37;
             this->outputbox->Text = L"";
             // 
+            // NewsaveButton
+            // 
+            this->NewsaveButton->AutoSize = true;
+            this->NewsaveButton->Dock = System::Windows::Forms::DockStyle::Fill;
+            this->NewsaveButton->Location = System::Drawing::Point(291, 255);
+            this->NewsaveButton->Name = L"NewsaveButton";
+            this->NewsaveButton->Size = System::Drawing::Size(90, 34);
+            this->NewsaveButton->TabIndex = 45;
+            this->NewsaveButton->TabStop = true;
+            this->NewsaveButton->Text = L"Newsave";
+            this->NewsaveButton->UseVisualStyleBackColor = true;
+            this->NewsaveButton->CheckedChanged += gcnew System::EventHandler(
+                this, &NewsaveWindow::NewsaveButton_CheckedChanged);
+            // 
+            // radioButton2
+            // 
+            this->radioButton2->AutoSize = true;
+            this->radioButton2->Dock = System::Windows::Forms::DockStyle::Fill;
+            this->radioButton2->Location = System::Drawing::Point(387, 255);
+            this->radioButton2->Name = L"radioButton2";
+            this->radioButton2->Size = System::Drawing::Size(92, 34);
+            this->radioButton2->TabIndex = 46;
+            this->radioButton2->TabStop = true;
+            this->radioButton2->Text = L"LoadFile";
+            this->radioButton2->UseVisualStyleBackColor = true;
+            this->radioButton2->CheckedChanged += gcnew System::EventHandler(
+                this, &NewsaveWindow::radioButton2_CheckedChanged);
+            // 
+            // FileExplorer
+            // 
+            this->FileExplorer->FileName = L"FileExplorer";
+            // 
             // NewsaveWindow
             // 
             this->AcceptButton = this->find_seeds_btn;
@@ -1104,14 +1155,20 @@ namespace CppCLRWinFormsProject
 
         System::Void find_seeds_btn_Click(System::Object^ sender, System::EventArgs^ e)
         {
-            Output output = get_output_from_user();
+            UserInput user_input = get_input_from_user();
 
-            //this calculates the seeds and puts it into output
-            Newsave(output).calculate_seeds(1000, static_cast<uint_fast32_t>(amount_of_seeds_to_loop->Value));
+            Newsave newsave = Newsave(user_input);
+            //split seeds amongst logical cores
+            const uint_fast32_t seed_split = (user_input.max_seeds - user_input.min_seeds) / pool.get_thread_amount();
 
+            //give logical core their portion of seeds (not accounting for remainder)
+
+            for (int i = 0; i < pool.get_thread_amount(); i++)
+                pool.submit(find_seeds_lambda, newsave, user_input.min_seeds + i * seed_split,
+                            user_input.min_seeds + (i + 1) * seed_split);
 
             //show user new output data
-            outputbox->Text = gcnew String(output.output_to_string().c_str());
+            outputbox->Text = gcnew String(user_input.output_to_string().c_str());
         }
 
     private:
@@ -1119,7 +1176,7 @@ namespace CppCLRWinFormsProject
          * \brief gets all user input from combo boxes and input fields and puts it in an object
          * \return Output object with all floors (map)
          */
-        Output get_output_from_user()
+        UserInput get_input_from_user()
         {
             std::vector<Floor> floors = {}; //init floors
 
@@ -1145,7 +1202,8 @@ namespace CppCLRWinFormsProject
                                 Shoguul(static_cast<int_fast16_t>(shoguul->SelectedValue),
                                         static_cast<int_fast16_t>(shoguul_item1->SelectedValue)));
 
-            return Output(map, static_cast<uint32_t>(amount_of_seeds_to_find->Value), RandomizeCheckBox->Checked);
+            count = static_cast<int>(amount_of_seeds_to_find->Value);
+            return UserInput(map, count, RandomizeCheckBox->Checked);
         }
 
     private:
@@ -1167,6 +1225,16 @@ namespace CppCLRWinFormsProject
             }
             RandomizeCheckBox->Checked = false;
             outputbox->Text = "";
+        }
+
+    private:
+        System::Void NewsaveButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+        {
+        }
+
+    private:
+        System::Void radioButton2_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+        {
         }
     };
 }

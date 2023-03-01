@@ -11,5 +11,10 @@
 
 #define NOTHING -1
 #define ANYTHING -1
+#include "Threadpool.h"
+
+inline Threadpool pool = Threadpool();
+inline std::atomic<int> count;
+
 
 #endif //PCH_H

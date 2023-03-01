@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Output.h"
+#include "UserInput.h"
 
 #include "Names.h"
 
@@ -11,7 +11,7 @@
  * \brief Generates a string that includes all items, floors and found seeds
  * \return output string for textbox
  */
-std::string Output::output_to_string() const
+std::string UserInput::output_to_string() const
 {
     using namespace Names; //namespace that includes all the names of items, floors, etc
     std::string result;

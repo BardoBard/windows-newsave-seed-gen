@@ -8,58 +8,14 @@
 #include "UnityRandom.h"
 
 /**
- * \brief looks for items provided in object
- * \param start_seed start
- * \param seeds_to_loop amount of seeds to look through, starts at 0
- */
-void Newsave::calculate_seeds(const uint_fast32_t start_seed, const uint_fast32_t seeds_to_loop)
-{
-    //find amount of logical cores on pc
-    const uint_fast8_t thread_amount = std::thread::hardware_concurrency();
-
-    //make collection of threads
-    std::vector<std::thread> threads;
-
-    //reserve thread collection so that it doesn't have to reclaim memory each pushback
-    threads.reserve(thread_amount);
-
-    //TODO: make threadpool class including mutex
-
-    //split seeds amongst logical cores
-    const uint_fast32_t seed_split = (seeds_to_loop - start_seed) / thread_amount;
-
-    //start timer
-    const auto start = std::chrono::steady_clock::now();
-
-    //give logical core their portion of seeds (not accounting for remainder)
-    for (int i = 0; i < thread_amount; ++i)
-        threads.emplace_back([&, i]
-        {
-            find_seeds(start_seed + i * seed_split, start_seed + (i + 1) * seed_split);
-        });
-
-    //join all threads
-    for (auto& thread : threads)
-        thread.join();
-
-    //end timer
-    const auto end = std::chrono::steady_clock::now();
-
-    // outfile.open("output.txt");
-    // outfile << "time: " + std::to_string(std::chrono::duration<double, std::milli>(end - start).count()) + " ms" <<
-    //     std::endl;
-    // outfile.close();
-}
-
-/**
  * \brief finds the seeds that have specified items (in this object) and puts them into output
  * \param master_seed start seed
  * \param max end seed
  */
-void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max)
+void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max) const
 {
     //loop through seed until max or until x amount of seeds have been found
-    for (; master_seed < max && output.amount_of_seeds_to_return > 0; master_seed++)
+    for (; master_seed < max && user_input.count > 0; master_seed++)
     {
         //newsave_weight are the weights for newsave items
         uint_fast8_t newsave_weight[59] = {
@@ -76,7 +32,7 @@ void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max)
             const uint_fast8_t i = range_s > 0 ? 8 : 7 + static_cast<uint_fast8_t>(range_s / 9);
 
             //if tutorial item isn't the item we want to find go to next seed
-            if (i != output.map.first_item && output.map.first_item != ANYTHING)
+            if (i != user_input.map.first_item && user_input.map.first_item != ANYTHING)
                 continue;
 
             const uint_fast8_t starter_to_uint8 = starter_to_newsave_index[i];
@@ -84,7 +40,7 @@ void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max)
             newsave_weight[starter_to_uint8] = 0; //remove weight from pool
         }
 
-        if (!output.map.shoguul.skip)
+        if (!user_input.map.shoguul.skip)
             if (!has_shoguul_item(master_seed)) //continue if shoguul item cannot be found
                 continue;
 
@@ -92,10 +48,8 @@ void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max)
         if (!find_floor_items(master_seed, total_weight, newsave_weight)) //continue if floor items cannot be found
             continue;
 
-        _InterlockedDecrement(&output.amount_of_seeds_to_return); //decrement seeds_to_find
-        mutex.lock(); //lock mutex
-        output.output_seeds.push_back(master_seed); //put seed into output
-        mutex.unlock(); //unlock mutex
+        user_input.output_seeds.push_back(master_seed);
+        --user_input.count;
     }
 }
 
@@ -108,14 +62,14 @@ void Newsave::find_seeds(uint_fast32_t master_seed, const uint_fast32_t max)
 inline bool Newsave::has_shoguul_item(const uint_fast32_t master_seed) const
 {
     //seed, which is based on specific floor
-    const auto seed = master_seed + output.map.shoguul.floor_index;
+    const auto seed = master_seed + user_input.map.shoguul.floor_index;
 
     //random number used for range
     const auto random_number = UnityRandom::next_uint(seed);
 
     //if shoguul is not open on current floor return false
-    if (const bool is_shoguul_open = floor(UnityRandom::range_inclusive(0, 100, random_number) / 5) == 0; !
-        is_shoguul_open)
+    if (const bool is_shoguul_open = floor(UnityRandom::range_inclusive(0, 100, random_number) / 5) == 0;
+        !is_shoguul_open)
         return false;
 
     //second random number used for range
@@ -129,7 +83,8 @@ inline bool Newsave::has_shoguul_item(const uint_fast32_t master_seed) const
         second_item_range++;
 
     //return if shoguul item is on current floor
-    return first_item_range == output.map.shoguul.item_index || second_item_range == output.map.shoguul.item_index;
+    return first_item_range == user_input.map.shoguul.item_index || second_item_range == user_input.map.shoguul.
+        item_index;
 }
 
 /**
@@ -143,7 +98,7 @@ inline bool Newsave::find_floor_items(const uint_fast32_t& master_seed, uint_fas
                                       uint8_t (&newsave_weight)[59]) const
 {
     //loop through floor indexes (1,2,3,4,6,7,8,9,11,12...)
-    for (const auto& floor : output.map.floors)
+    for (const auto& floor : user_input.map.floors)
     {
         //random number used for range
         const auto random_number = UnityRandom::next_uint(master_seed + floor.floor_index);
@@ -159,13 +114,13 @@ inline bool Newsave::find_floor_items(const uint_fast32_t& master_seed, uint_fas
                 range_n -= newsave_weight[index++];
         }
         --index;
-        if (output.randomize)
+        if (user_input.randomize)
         {
-            if (std::find_if(output.map.floors.cbegin(), output.map.floors.cend(),
+            if (std::find_if(user_input.map.floors.cbegin(), user_input.map.floors.cend(),
                              [index](const Floor& floor) -> bool
                              {
                                  return floor.item_index == index;
-                             }) == output.map.floors.cend())
+                             }) == user_input.map.floors.cend())
                 return false;
         }
         else
